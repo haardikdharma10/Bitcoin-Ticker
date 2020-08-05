@@ -10,11 +10,9 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
-
-  String selectedCurrency = 'USD';
+String selectedCurrency = 'AUD';
 
   DropdownButton<String> androidDropDown(){
-
     List <DropdownMenuItem<String>> dropdownItems = [];
     for(String currency in currenciesList){
        var newItem = DropdownMenuItem(child: Text(
@@ -27,6 +25,7 @@ class _PriceScreenState extends State<PriceScreen> {
               setState(() {
               selectedCurrency = value;
               //print(value);
+              getData();
               },);
             },);
   }
@@ -38,17 +37,21 @@ class _PriceScreenState extends State<PriceScreen> {
     }
     return CupertinoPicker(itemExtent: 32.0, onSelectedItemChanged: (selectedIndex){
               print(selectedIndex);
+              setState(() {
+                selectedCurrency = currenciesList[selectedIndex];
+                getData();
+              });
             }, children: pickerItems,
             );
   }
 
-String bitcoinValueInUSD;
+String bitcoinValue = '?';
 
   void getData()async {
     try{
-      double data = await CoinData().getCoinData(); 
+      double data = await CoinData().getCoinData(selectedCurrency); 
       setState(() {
-        bitcoinValueInUSD = data.toStringAsFixed(0);
+        bitcoinValue = data.toStringAsFixed(2);
       });
     }
     catch(e){
@@ -81,7 +84,7 @@ String bitcoinValueInUSD;
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC =  $bitcoinValueInUSD USD',
+                  '1 BTC =  $bitcoinValue $selectedCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
