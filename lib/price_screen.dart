@@ -23,9 +23,9 @@ String selectedCurrency = 'AUD';
     return DropdownButton <String>(value: selectedCurrency, //starting value.
             items: dropdownItems, onChanged: (value){
               setState(() {
+                getData();
               selectedCurrency = value;
               //print(value);
-              getData();
               },);
             },);
   }
@@ -45,24 +45,64 @@ String selectedCurrency = 'AUD';
             );
   }
 
-String bitcoinValue = '?';
+  String bitcoinValue = '?';
+  String etheriumValue = '?';
+  String litecoinValue = '?';
+
 
   void getData()async {
-    try{
-      double data = await CoinData().getCoinData(selectedCurrency); 
+    try {
+      double dataBTC = await CoinData().getCoinDataBTC(selectedCurrency);
+      double dataETH = await CoinData().getCoinDataETH(selectedCurrency);
+      double dataLTC = await CoinData().getCoinDataLTC(selectedCurrency);
       setState(() {
-        bitcoinValue = data.toStringAsFixed(2);
+        bitcoinValue = dataBTC.toStringAsFixed(0);
+        etheriumValue = dataETH.toStringAsFixed(0);
+        litecoinValue = dataLTC.toStringAsFixed(0);
       });
-    }
-    catch(e){
+    }catch(e){
       print(e);
     }
   }
-  @override
+
+  Widget cards(String baseCoin) {
+
+    String baseVal;
+
+    if(baseCoin == 'BTC')
+      baseVal = bitcoinValue;
+    else if(baseCoin == 'ETH')
+      baseVal = etheriumValue;
+    else
+      baseVal = litecoinValue;
+       return Padding(
+      padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+      child: Card(
+        color: Colors.lightBlueAccent,
+        elevation: 5.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+          child: Text(
+            '1 $baseCoin = $baseVal $selectedCurrency',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+ @override
   void initState() {
     super.initState();
     getData();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,26 +113,13 @@ String bitcoinValue = '?';
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Colors.lightBlueAccent,
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 BTC =  $bitcoinValue $selectedCurrency',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+               cards('BTC'),
+              cards('ETH'),
+              cards('LTC'),
+            ],
           ),
           Container(
             height: 150.0,
