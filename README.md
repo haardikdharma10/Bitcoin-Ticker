@@ -6,7 +6,7 @@ The objective of this project is to learn about using Cupertino and Material Wid
 
 ## Abstract
 
-We’re going to make a crypto currency price checking app. By the end of the module, we'll be able to monitor bitcoin investents on the move!
+We’re going to make a crypto currency price checking app. By the end of the module, we'll be able to monitor bitcoin investments on the move!
 
 ![Finished App](https://github.com/londonappbrewery/Images/blob/master/bitcoin-flutter-demo.gif)
 
